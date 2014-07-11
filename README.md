@@ -1,6 +1,9 @@
 quick_file
 ==========
 
+vim.org link:
+http://www.vim.org/scripts/script.php?script_id=4980
+
 NEED VIM WITH PYTHON SUPPORT!!!
 ===============================
 
