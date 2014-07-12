@@ -35,6 +35,7 @@ def test(pwd, args, timeout):
                     break;
             if found:
                 return path
+    print 'No file found'
     return None
 
 args = vim.eval("a:000")
