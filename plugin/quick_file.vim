@@ -4,18 +4,26 @@ endif
 
 function! QuickFile(...)
 python << endpython
+from __future__ import division
 import vim
 import os
 import glob
 import fnmatch
+import time
 
-def test(matches, args):
+def test(pwd, args, timeout):
     name = '*%s*'%(args[0])
     others = args[1:]
-    match = None
     count = 0
+    start = time.time()
     for root,dir,files in os.walk(pwd):
+        if (time.time() - start) >= timeout:
+            print 'Timeout'
+            return None
         for file in fnmatch.filter(files,name):
+            if (time.time() - start) >= timeout:
+                print 'Timeout'
+                return None
             pre, ext = os.path.splitext(file)
             if ext in ['pyc','swp','class'] or pre.startswith('.'):
                 continue
@@ -26,15 +34,13 @@ def test(matches, args):
                     found = False
                     break;
             if found:
-                match = path
-                return match
-    return match
-
+                return path
+    return None
 
 args = vim.eval("a:000")
 pwd = vim.eval('getcwd()')
 if len(args) > 0:
-    match = test(pwd,args)
+    match = test(pwd, args, 3)
     if match is not None: 
         vim.command('e %s'%(match))
 endpython
