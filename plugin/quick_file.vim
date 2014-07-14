@@ -10,6 +10,14 @@ import os
 import glob
 import fnmatch
 import time
+from sys import platform as _platform
+
+def getEPath(thing):
+    if _platform.find('linux') == 0 or _platform == 'darwin':
+        return thing.replace(' ','\ ')
+    else:
+        return '"%s"'%(thing)
+        
 
 def test(pwd, args, timeout):
     name = '*%s*'%(args[0])
@@ -34,7 +42,7 @@ def test(pwd, args, timeout):
                     found = False
                     break;
             if found:
-                return path
+                return getEPath(path)
     print 'No file found'
     return None
 
