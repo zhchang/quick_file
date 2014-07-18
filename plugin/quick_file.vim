@@ -11,6 +11,7 @@ import glob
 import fnmatch
 import time
 from sys import platform as _platform
+import subprocess
 
 def getEPath(thing):
     if _platform.find('linux') == 0 or _platform == 'darwin':
@@ -18,11 +19,26 @@ def getEPath(thing):
     else:
         return '"%s"'%(thing)
         
+def find(pwd, args, timeout):
+    if _platform.find('linux') == 0 or _platform == 'darwin':
+        name = '*%s*'%(args[0])
+        others = args[1:]
+        inputs = ['find','.','-name',name]
+        for thing in ['*.pyc','*.class','*.swp']:
+            inputs += ['-and','-not','-name',thing]
+        for other in others:
+            inputs += ['|','grep',other]
+        p = subprocess.Popen(inputs,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        out,err=p.communicate()
+        things = out.split('\n')
+        if things is not None:
+            return getEPath(things[0])
+    else:
+        return winfind(pwd,args,timeout)
 
-def test(pwd, args, timeout):
+def winfind(pwd, args, timeout):
     name = '*%s*'%(args[0])
     others = args[1:]
-    count = 0
     start = time.time()
     for root,dir,files in os.walk(pwd):
         if (time.time() - start) >= timeout:
@@ -49,7 +65,7 @@ def test(pwd, args, timeout):
 args = vim.eval("a:000")
 pwd = vim.eval('getcwd()')
 if len(args) > 0:
-    match = test(pwd, args, 3)
+    match = find(pwd, args, 3)
     if match is not None: 
         vim.command('e %s'%(match))
 endpython
