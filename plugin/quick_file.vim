@@ -23,16 +23,17 @@ def find(pwd, args, timeout):
     if _platform.find('linux') == 0 or _platform == 'darwin':
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = ['find','.','-name',name]
-        for thing in ['*.pyc','*.class','*.swp']:
-            inputs += ['-and','-not','-name',thing]
+        inputs = 'find . -type f -name "%s" -and -not -name "*.pyc" -and -not -name "*.class" -and -not -name "*.swp"'%(name)
         for other in others:
-            inputs += ['|','grep',other]
-        p = subprocess.Popen(inputs,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            inputs += '|grep %s'%(other)
+        p = subprocess.Popen(inputs,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         out,err=p.communicate()
+
         things = out.split('\n')
-        if things is not None:
+        if things is not None and len(things[0])>0:
             return getEPath(things[0])
+        else:
+            return None
     else:
         return winfind(pwd,args,timeout)
 
