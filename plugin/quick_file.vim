@@ -10,8 +10,12 @@ import os
 import glob
 import fnmatch
 import time
+import threading
 from sys import platform as _platform
 import subprocess
+
+out=[]
+error='time out'
 
 def getEPath(thing):
     if _platform.find('linux') == 0 or _platform == 'darwin':
@@ -23,16 +27,27 @@ def find(pwd, args, timeout):
     if _platform.find('linux') == 0 or _platform == 'darwin':
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = 'find . -type f -name "%s" -and -not -name "*.pyc" -and -not -name "*.class" -and -not -name "*.swp"'%(name)
+        inputs = 'find . -type f -name "%s" '%(name)
+        for ignore in ['*.pyc','*.swp','*.class']:
+            inputs += '-and -not -name "%s"'%(ignore)
         for other in others:
             inputs += '|grep %s'%(other)
-        p = subprocess.Popen(inputs,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-        out,err=p.communicate()
-
+        def _target():
+            global out
+            p = subprocess.Popen(inputs,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+            out,err=p.communicate()
+            global error
+            error = 'not found'
+	thread = threading.Thread(target=_target)
+        thread.start()
+        thread.join(timeout)
         things = out.split('\n')
         if things is not None and len(things[0])>0:
-            return getEPath(things[0])
+            match = getEPath(things[0])
+            print match
+            return match
         else:
+            print error
             return None
     else:
         return winfind(pwd,args,timeout)
