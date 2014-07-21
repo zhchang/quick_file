@@ -14,8 +14,10 @@ import threading
 from sys import platform as _platform
 import subprocess
 
-out=[]
+out=''
 error='time out'
+p = None
+
 
 def getEPath(thing):
     if _platform.find('linux') == 0 or _platform == 'darwin':
@@ -34,6 +36,7 @@ def find(pwd, args, timeout):
             inputs += '|grep %s'%(other)
         def _target():
             global out
+            global p
             p = subprocess.Popen(inputs,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
             out,err=p.communicate()
             global error
@@ -41,6 +44,11 @@ def find(pwd, args, timeout):
 	thread = threading.Thread(target=_target)
         thread.start()
         thread.join(timeout)
+        if out == 'time out':
+            try:
+                p.kill()
+            except:
+                pass
         things = out.split('\n')
         if things is not None and len(things[0])>0:
             match = getEPath(things[0])
