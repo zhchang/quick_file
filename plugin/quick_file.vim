@@ -44,13 +44,15 @@ def find(pwd, args, timeout):
 	thread = threading.Thread(target=_target)
         thread.start()
         thread.join(timeout)
-        if out == 'time out':
+        if error == 'time out':
             try:
                 p.kill()
             except:
                 pass
         things = out.split('\n')
-        if things is not None and len(things[0])>0:
+        if things is not None:
+            things = [x for x in things if len(x) > 0]
+            things.sort(lambda x,y: cmp(len(x),len(y)))
             match = getEPath(things[0])
             print match
             return match
