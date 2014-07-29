@@ -50,15 +50,15 @@ def find(pwd, args, timeout):
             except:
                 pass
         things = out.split('\n')
-        if things is not None:
+        if things is not None and len(things)>0:
             things = [x for x in things if len(x) > 0]
-            things.sort(lambda x,y: cmp(len(x),len(y)))
-            match = getEPath(things[0])
-            print match
-            return match
-        else:
-            print error
-            return None
+            if len(things)>0:
+                things.sort(lambda x,y: cmp(len(x),len(y)))
+                match = getEPath(things[0])
+                print match
+                return match
+        print error
+        return None
     else:
         return winfind(pwd,args,timeout)
 
