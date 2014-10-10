@@ -55,7 +55,7 @@ def find(pwd, args, timeout):
             if len(things)>0:
                 things.sort(lambda x,y: cmp(len(x),len(y)))
                 match = getEPath(things[0])
-                print match
+                #print match
                 return match
         print error
         return None
