@@ -1,20 +1,23 @@
 quick_file
 ==========
 
+jump to files, even though you might not remember the full path and / or the full name
+
 vim.org link:
 http://www.vim.org/scripts/script.php?script_id=4980
 
 NEED VIM WITH PYTHON SUPPORT!!!
 ===============================
 
-a quick jump to file plugin for vim
 
-:QF <part-of-file-name> <additional-1> <additional-2> <additional-3>
+:QF something my-folder my-sub-folder
 
-e.g.:
+if you have wtf/wtf-my-folder-blahblah/wtf-my-sub-folder-blahblahblah/this-is-something-lol.py
 
-./subfolder/subfolder2/extremely-long-named-file.txt
+it will locate and open this-is-something-lol.py for editing in no time.
 
-:QF extrem long-named
+All you need to jump to a file is to type a fragment of the filename, and optionally specify fragment of the folder that it resides in. The plugin will jump to the closest match and start editing it.(the more fragment you give, the preciser the match will be)
 
-There are many other use cases you can explore.
+a big productivity improver.
+
+Enjoy.
