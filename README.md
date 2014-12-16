@@ -9,15 +9,11 @@ http://www.vim.org/scripts/script.php?script_id=4980
 NEED VIM WITH PYTHON SUPPORT!!!
 ===============================
 
+:QF filename-fragment
 
-:QF something my-folder my-sub-folder
+the plugin will try to jump to shallowest match under current directory and it's sub directories. Also, it is possible to provide more details for a deeper match.
 
-if you have wtf/wtf-my-folder-blahblah/wtf-my-sub-folder-blahblahblah/this-is-something-lol.py
+let's say we have a/c.txt a/b/c.txt
 
-it will locate and open this-is-something-lol.py for editing in no time.
-
-All you need to jump to a file is to type a fragment of the filename, and optionally specify fragment of the folder that it resides in. The plugin will jump to the closest match and start editing it.(the more fragment you give, the preciser the match will be)
-
-a big productivity improver.
-
-Enjoy.
+:QF c will jump to a/c.txt and start editing
+:QF c b will jump to a/b/c.txt
