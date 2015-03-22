@@ -14,6 +14,9 @@ import threading
 from sys import platform as _platform
 import subprocess
 
+secondSearch=True
+secondSearchPath='~'
+Ktimeout=3
 out=''
 error='time out'
 p = None
@@ -41,7 +44,7 @@ def find(pwd, args, timeout):
             out,err=p.communicate()
             global error
             error = 'not found'
-	thread = threading.Thread(target=_target)
+        thread = threading.Thread(target=_target)
         thread.start()
         thread.join(timeout)
         if error == 'time out':
@@ -49,6 +52,24 @@ def find(pwd, args, timeout):
                 p.kill()
             except:
                 pass
+        if not len(out) and secondSearch:
+            print "second search"
+            inputs = 'find '+secondSearchPath+' -type f -name "%s" '%(name)
+            for ignore in ['*.pyc','*.swp','*.class']:
+                inputs += '-and -not -name "%s"'%(ignore)
+            for other in others:
+                inputs += '|grep %s'%(other)
+            thread = threading.Thread(target=_target)
+            thread.start()
+            thread.join(timeout)
+            if error == 'time out':
+                try:
+                    p.kill()
+                    print out
+                except:
+                    pass
+
+
         things = out.split('\n')
         if things is not None and len(things)>0:
             things = [x for x in things if len(x) > 0]
@@ -91,7 +112,7 @@ def winfind(pwd, args, timeout):
 args = vim.eval("a:000")
 pwd = vim.eval('getcwd()')
 if len(args) > 0:
-    match = find(pwd, args, 3)
+    match = find(pwd, args, Ktimeout)
     if match is not None: 
         vim.command('e %s'%(match))
 endpython
