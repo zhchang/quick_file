@@ -25,11 +25,11 @@ def getEPath(thing):
     else:
         return '"%s"'%(thing)
         
-def find(pwd, args, timeout):
+def find(sp,pwd, args, timeout):
     if _platform.find('linux') == 0 or _platform == 'darwin':
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = 'find . -type f -name "%s" '%(name)
+        inputs = 'find %s -type f -name "%s" '%(sp,name)
         for ignore in ['*.pyc','*.swp','*.class']:
             inputs += '-and -not -name "%s"'%(ignore)
         for other in others:
@@ -89,12 +89,17 @@ def winfind(pwd, args, timeout):
     return None
 
 args = vim.eval("a:000")
+asp = vim.eval("g:QF_ASP")
 pwd = vim.eval('getcwd()')
 if len(args) > 0:
-    match = find(pwd, args, 3)
+    match = find('.',pwd, args, 3)
+    if match is None and len(asp)>0:
+        match = find(asp,pwd, args, 3)
     if match is not None: 
         vim.command('e %s'%(match))
 endpython
 endfunction
-
+if !exists("g:QF_ASP") 
+    let g:QF_ASP="~" 
+endif
 command! -nargs=* QF call QuickFile(<f-args>)
