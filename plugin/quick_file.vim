@@ -26,10 +26,15 @@ def getEPath(thing):
         return '"%s"'%(thing)
         
 def find(sp,pwd, args, timeout):
-    if _platform.find('linux') == 0 or _platform == 'darwin':
+    linux == _platform.find('linux') == 0
+    osx == _platform.find('darwin') == 0
+    if linux or osx:
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = 'find -O3 %s -type f -name "%s" '%(sp,name)
+        if linux:
+            inputs = 'find -O3 %s -type f -name "%s" '%(sp,name)
+        else:
+            inputs = 'find %s -type f -name "%s" '%(sp,name)
         for ignore in ['*.pyc','*.swp','*.class']:
             inputs += '-and -not -name "%s"'%(ignore)
         for other in others:
