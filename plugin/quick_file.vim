@@ -26,8 +26,8 @@ def getEPath(thing):
         return '"%s"'%(thing)
         
 def find(sp,pwd, args, timeout):
-    linux == _platform.find('linux') == 0
-    osx == _platform.find('darwin') == 0
+    linux = _platform.find('linux') == 0
+    osx = _platform.find('darwin') == 0
     if linux or osx:
         name = '*%s*'%(args[0])
         others = args[1:]
