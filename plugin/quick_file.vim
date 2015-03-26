@@ -29,7 +29,7 @@ def find(sp,pwd, args, timeout):
     if _platform.find('linux') == 0 or _platform == 'darwin':
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = 'find %s -Olevel 3 -type f -name "%s" '%(sp,name)
+        inputs = 'find -O3 %s -type f -name "%s" '%(sp,name)
         for ignore in ['*.pyc','*.swp','*.class']:
             inputs += '-and -not -name "%s"'%(ignore)
         for other in others:
