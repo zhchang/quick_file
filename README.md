@@ -23,4 +23,6 @@ By Default, QF will search on secondary search path when pwd(.) failed to return
 To Change the secondary search path: let g:QF_ASP="your-path"
 To Disable secondary search: let g:QF_ASP=""
 
-
+Support ack wrapper as :ACK search-term file-ext
+e.g.:
+:ACK TODO go
