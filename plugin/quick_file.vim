@@ -1,6 +1,22 @@
 if !has('python')
     finish
 endif
+function! QuickSearch(...)
+python << endpython
+from __future__ import division
+import vim
+from os.path import expanduser
+home = expanduser("~")
+args = vim.eval("a:000")
+with open('%s/.qflist'%(home),'w') as f:
+    cmds = 'ack "%s" --type=%s'%(args[0],args[1])
+    print cmds
+    p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
+    out,err=p.communicate()
+vim.command('copen')
+vim.command('cfile ~/.qflist')
+endpython
+endfunction
 
 function! QuickFile(...)
 python << endpython
@@ -108,3 +124,4 @@ if !exists("g:QF_ASP")
     let g:QF_ASP="~" 
 endif
 command! -nargs=* QF call QuickFile(<f-args>)
+command! -nargs=* ACK call QuickSearch(<f-args>)
