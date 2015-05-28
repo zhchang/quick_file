@@ -1,6 +1,29 @@
 if !has('python')
     finish
 endif
+function! QuickSearchGo(...)
+python << endpython
+from __future__ import division
+import vim
+from os.path import expanduser
+home = expanduser("~")
+args = vim.eval("a:000")
+pattern = vim.eval('expand("<cword>")')
+ok = False
+with open('%s/.qflist'%(home),'w') as f:
+    cmds = 'ag --vimgrep --go "%s"'%(pattern)
+    p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
+    out,err=p.communicate()
+    ok = p.returncode == 0 
+if ok:
+    vim.command('cclose')
+    vim.command('copen')
+    vim.command('cfile ~/.qflist')
+else:
+    print 'install ag man! if you already did, that means the plugin is fucked'
+endpython
+endfunction
+
 function! QuickSearch(...)
 python << endpython
 from __future__ import division
@@ -9,14 +32,23 @@ from os.path import expanduser
 home = expanduser("~")
 args = vim.eval("a:000")
 pattern = vim.eval('expand("<cword>")')
+ok = False
 if len(args)>0:
     pattern = args[0]
 with open('%s/.qflist'%(home),'w') as f:
-    cmds = 'ack -s -H --nocolor --nogroup --column "%s"'%(pattern)
+    if len(args) > 1:
+        cmds = 'ag --vimgrep --%s "%s"'%(pattern,args[1])
+    else:
+        cmds = 'ag --vimgrep "%s"'%(pattern)
     p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
     out,err=p.communicate()
-vim.command('copen')
-vim.command('cfile ~/.qflist')
+    ok = p.returncode == 0 
+if ok:
+    vim.command('cclose')
+    vim.command('copen')
+    vim.command('cfile ~/.qflist')
+else:
+    print 'install ag man! if you already did, that means the plugin is fucked'
 endpython
 endfunction
 
@@ -126,4 +158,6 @@ if !exists("g:QF_ASP")
     let g:QF_ASP="~" 
 endif
 command! -nargs=* QF call QuickFile(<f-args>)
-command! -nargs=* ACK call QuickSearch(<f-args>)
+command! -nargs=* AG call QuickSearch(<f-args>)
+command! -nargs=* AGGO call QuickSearchGo(<f-args>)
+nnoremap <silent> ga :AGGO<cr>
