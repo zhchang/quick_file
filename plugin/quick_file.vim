@@ -8,9 +8,11 @@ import vim
 from os.path import expanduser
 home = expanduser("~")
 args = vim.eval("a:000")
+pattern = vim.eval('expand("<cword>")')
+if len(args)>0:
+    pattern = args[0]
 with open('%s/.qflist'%(home),'w') as f:
-    cmds = 'ack "%s" --type=%s'%(args[0],args[1])
-    print cmds
+    cmds = 'ack -s -H --nocolor --nogroup --column "%s"'%(pattern)
     p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
     out,err=p.communicate()
 vim.command('copen')
