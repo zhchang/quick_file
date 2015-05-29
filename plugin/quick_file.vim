@@ -1,30 +1,6 @@
 if !has('python')
     finish
 endif
-function! QuickSearchGo(...)
-python << endpython
-from __future__ import division
-import vim
-import subprocess
-from os.path import expanduser
-home = expanduser("~")
-args = vim.eval("a:000")
-pattern = vim.eval('expand("<cword>")')
-ok = False
-with open('%s/.qflist'%(home),'w') as f:
-    cmds = 'ag --vimgrep --go "%s"'%(pattern)
-    p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
-    out,err=p.communicate()
-    ok = p.returncode == 0 
-if ok:
-    vim.command('cclose')
-    vim.command('copen')
-    vim.command('cfile ~/.qflist')
-else:
-    vim.command('cclose')
-    print 'I got nothing.'
-endpython
-endfunction
 
 function! QuickSearch(...)
 python << endpython
@@ -36,9 +12,9 @@ home = expanduser("~")
 args = vim.eval("a:000")
 pattern = vim.eval('expand("<cword>")')
 ok = False
-if len(args)>0:
+if len(args)>0 and args[0] != 'current-word':
     pattern = args[0]
-with open('%s/.qflist'%(home),'w') as f:
+with open('%s/.temp'%(home),'w') as f:
     if len(args) > 1:
         cmds = 'ag --vimgrep --%s "%s"'%(args[1],pattern)
     else:
@@ -46,6 +22,11 @@ with open('%s/.qflist'%(home),'w') as f:
     p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
     out,err=p.communicate()
     ok = p.returncode == 0 
+if ok:
+    with open('%s/.qflist'%(home),'w') as f:
+        p = subprocess.Popen('expand -t 1 %s/.temp'%(home),shell=True,stdout=f,stderr=subprocess.PIPE)
+        out,err=p.communicate()
+        ok = p.returncode == 0 
 if ok:
     vim.command('cclose')
     vim.command('copen')
@@ -163,5 +144,4 @@ if !exists("g:QF_ASP")
 endif
 command! -nargs=* QF call QuickFile(<f-args>)
 command! -nargs=* AG call QuickSearch(<f-args>)
-command! -nargs=* AGGO call QuickSearchGo(<f-args>)
-nnoremap <silent> ga :AGGO<cr>
+nnoremap <silent> ga :AG current-word go<cr>
