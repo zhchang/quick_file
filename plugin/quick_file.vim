@@ -21,7 +21,8 @@ if ok:
     vim.command('copen')
     vim.command('cfile ~/.qflist')
 else:
-    print 'install ag man! if you already did, that means the plugin is fucked'
+    vim.command('cclose')
+    print 'I got nothing.'
 endpython
 endfunction
 
@@ -39,7 +40,7 @@ if len(args)>0:
     pattern = args[0]
 with open('%s/.qflist'%(home),'w') as f:
     if len(args) > 1:
-        cmds = 'ag --vimgrep --%s "%s"'%(pattern,args[1])
+        cmds = 'ag --vimgrep --%s "%s"'%(args[1],pattern)
     else:
         cmds = 'ag --vimgrep "%s"'%(pattern)
     p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
@@ -50,7 +51,8 @@ if ok:
     vim.command('copen')
     vim.command('cfile ~/.qflist')
 else:
-    print 'install ag man! if you already did, that means the plugin is fucked'
+    vim.command('cclose')
+    print 'I got nothing'
 endpython
 endfunction
 
