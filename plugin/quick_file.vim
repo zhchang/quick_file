@@ -5,6 +5,7 @@ function! QuickSearchGo(...)
 python << endpython
 from __future__ import division
 import vim
+import subprocess
 from os.path import expanduser
 home = expanduser("~")
 args = vim.eval("a:000")
@@ -28,6 +29,7 @@ function! QuickSearch(...)
 python << endpython
 from __future__ import division
 import vim
+import subprocess
 from os.path import expanduser
 home = expanduser("~")
 args = vim.eval("a:000")
