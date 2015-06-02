@@ -11,7 +11,8 @@ NEED VIM WITH PYTHON SUPPORT!!!
 
 :AG term [extension]
 
-opens files that has text match to the search tearm in quick-fix window. There is also a shortcut available: pressing ag with cursor in word to search for occurence of that word. (because I am currently doing golang, so I hooked up this shortcut *.go files, but you can change that with ease in your .vimrc)
+This requires https://github.com/ggreer/the_silver_searcher installed.
+opens files that has text match to the search tearm in quick-fix window. There is also a shortcut available: pressing 'ga' with cursor in word to search for occurence of that word. (because I am currently doing golang, so I hooked up this shortcut *.go files, but you can change that with ease in your .vimrc)
 
 :QF filename-fragment
 
