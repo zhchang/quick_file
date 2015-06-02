@@ -14,20 +14,20 @@ pattern = vim.eval('expand("<cword>")')
 ok = False
 if len(args)>0 and args[0] != 'current-word':
     pattern = args[0]
-with open('%s/.temp'%(home),'w') as f:
-    if len(args) > 1:
-        cmds = 'ag --vimgrep --%s "%s"'%(args[1],pattern)
-    else:
-        cmds = 'ag --vimgrep "%s"'%(pattern)
-    p = subprocess.Popen(cmds,shell=True,stdout=f,stderr=subprocess.PIPE)
-    out,err=p.communicate()
-    ok = p.returncode == 0 
+if len(args) > 1:
+    cmds = 'ag --vimgrep --%s "%s"'%(args[1],pattern)
+else:
+    cmds = 'ag --vimgrep "%s"'%(pattern)
+p = subprocess.Popen(cmds,shell=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+out,err=p.communicate()
+ok = p.returncode == 0 
 if ok:
     with open('%s/.qflist'%(home),'w') as f:
-        p = subprocess.Popen('expand -t 1 %s/.temp'%(home),shell=True,stdout=f,stderr=subprocess.PIPE)
-        out,err=p.communicate()
-        ok = p.returncode == 0 
-if ok:
+        lines = out.split('\n')
+        for line in lines:
+           parts = line.split(':',4) 
+           if len(parts)==4:
+               f.write(':'.join(parts[:3])+': '+parts[3]+'\n')
     vim.command('cclose')
     vim.command('copen')
     vim.command('cfile ~/.qflist')
