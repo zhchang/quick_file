@@ -9,6 +9,10 @@ http://www.vim.org/scripts/script.php?script_id=4980
 NEED VIM WITH PYTHON SUPPORT!!!
 ===============================
 
+:AG term [extension]
+
+opens files that has text match to the search tearm in quick-fix window. There is also a shortcut available: pressing ag with cursor in word to search for occurence of that word. (because I am currently doing golang, so I hooked up this shortcut *.go files, but you can change that with ease in your .vimrc)
+
 :QF filename-fragment
 
 the plugin will try to jump to shallowest match under current directory and it's sub directories. Also, it is possible to provide more details for a deeper match.
