@@ -25,7 +25,7 @@ if ok:
     with open('%s/.qflist'%(home),'w') as f:
         lines = out.split('\n')
         for line in lines:
-           parts = line.split(':',4) 
+           parts = line.split(':',3) 
            if len(parts)==4:
                f.write(':'.join(parts[:3])+': '+parts[3]+'\n')
     vim.command('cclose')
