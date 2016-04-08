@@ -60,7 +60,7 @@ def getEPath(thing):
     else:
         return '"%s"'%(thing)
         
-def find(sp,pwd, args, timeout):
+def find(sp, pwd, args, timeout):
     linux = _platform.find('linux') == 0
     osx = _platform.find('darwin') == 0
     if linux or osx:
@@ -81,7 +81,7 @@ def find(sp,pwd, args, timeout):
             out,err=p.communicate()
             global error
             error = 'not found'
-	    thread = threading.Thread(target=_target)
+        thread = threading.Thread(target=_target)
         thread.start()
         thread.join(timeout)
         if error == 'time out':
